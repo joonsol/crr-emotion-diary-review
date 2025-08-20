@@ -1,9 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
+
 const Edit = () => {
-  const params = useParams()
+ const {id}=useParams()
   return (
-    <div>{params.id}Edit</div>
+    <div>{id} Edit</div>
   )
 }
 

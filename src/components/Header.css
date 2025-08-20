@@ -2,25 +2,14 @@
     display: flex;
     align-items: center;
     padding: 20px 0;
-    border-bottom: 1px solid rgb(226, 226, 226);
+    justify-content: space-between;
 }
-
-.Header > div {
-    display: flex;
-}
-
-.Header .header_center {
-    width: 50%;
+.header_center {
     font-size: 25px;
-    justify-content: center;
+    text-transform: capitalize;
+    /* width: 50%; */
 }
-
-.Header .header_left {
-    width: 25%;
-    justify-content: flex-start;
-}
-
-.Header .header_right {
-    width: 25%;
-    justify-content: flex-end;
+.header_left,
+.header_right {
+    /* width: 25%; */
 }

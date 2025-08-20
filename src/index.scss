@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "NanumPenScript";
+  src: url("./assets/NanumPenScript-Regular.ttf");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "NanumPenScript";
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%
+}
+
+#root {
+  // background-color: white;
+
+  height: 100%;
+
+}
+
+.Container {
+  min-height: 100vh;
+
+}
+
+img {
+  max-width: 100%;
+}
+
+.content-wrap {
+  max-width: 600px;
+  padding: 20px;
+  margin: auto;
+}
+
+
+.Container.dark {
+  background-color: rgb(29, 29, 29);
+  box-shadow: rgba(202, 202, 202, 0.9) 0px 0px 29px 0px;
+}
+
+.Container.dark * {
+  color: #fff;
+}
+
+.Container.dark button,
+.Container.dark .DiaryList .menu-bar select,
+.Container.dark select {
+  background-color: #000;
+}

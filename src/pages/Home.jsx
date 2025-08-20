@@ -1,17 +1,57 @@
-import React from 'react'
-import Header from "../components/Header";
-import Button from "../components/Button";
-import DiaryList from "../components/DiaryList";
-
+import React, { useState, useContext } from 'react'
+import Header from '../components/Header'
+import Button from '../components/Button'
+import DiaryList from '../components/DiaryList'
+import { DiaryStateContext } from '../App'
 const Home = () => {
+
+  const data = useContext(DiaryStateContext)
+
+
+  const [pivotDate, setPivotDate] = useState(new Date())
+
+
+
+  const getMonthlyData = (pivotDate, data) => {
+
+    const beginTime = new Date(
+      pivotDate.getFullYear(),
+      pivotDate.getMonth(),
+      1,
+      0, 0, 0
+    ).getTime()
+    const endTime = new Date(
+      pivotDate.getFullYear(),
+      pivotDate.getMonth() + 1,
+      0,
+      23, 59, 59
+    ).getTime()
+
+    return data.filter(
+      (item) => beginTime <= item.createdDate && item.createdDate <= endTime
+    )
+  }
+
+
+  const monthlyData = getMonthlyData(pivotDate,data)
+  const onIncreamentMonth = () => {
+    setPivotDate(
+      new Date(pivotDate.getFullYear(), pivotDate.getMonth() + 1)
+    )
+  }
+  const onDecreamentMonth = () => {
+    setPivotDate(
+      new Date(pivotDate.getFullYear(), pivotDate.getMonth() - 1)
+    )
+  }
   return (
     <div>
       <Header
-        title={"2024.10"}                      // 현재 연도와 월을 표시
-        leftChild={<Button text={"<"} />}       // 왼쪽 버튼 ("<")
-        rightChild={<Button text={">"} />}      // 오른쪽 버튼 (">")
+        leftChild={<Button text={"<"} onClick={onDecreamentMonth} />}
+        title={`${pivotDate.getFullYear()}년 ${pivotDate.getMonth() + 1}월`}
+        rightChild={<Button text={">"} onClick={onIncreamentMonth} />}
       />
-      <DiaryList />                            
+      <DiaryList data={monthlyData} />
     </div>
   )
 }

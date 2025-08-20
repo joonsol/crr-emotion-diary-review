@@ -1,73 +1,81 @@
 
 import './App.css'
-import { useReducer, useRef, useEffect, useState, useContext, createContext } from 'react'
+import { useReducer, useRef, createContext, useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import New from './pages/New'
-import Edit from './pages/Edit'
 import Diary from './pages/Diary'
+import Edit from './pages/Edit'
+import Home from './pages/Home'
 import Notfound from './pages/Notfound'
-import { getEmotionImage } from "./util/getEmotionImage";
-import Header from './components/Header'
-import Button from './components/Button'
+import New from './pages/New'
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "INIT":
-      return action.data;
-    case "CREATE":
-      return [action.data, ...state]; // 새로운 일기를 앞에 추가
-    case "UPDATE":
-      return state.map((item) =>
-        String(item.id) === String(action.data.id) // ID가 일치하는지 확인
-          ? action.data                          // ID가 일치하면 수정된 데이터로 대체
-          : item                                 // 일치하지 않으면 기존 데이터 유지
-      );
-    case "DELETE":
-      return state.filter(
-        (item) => String(item.id) !== String(action.id) // id가 일치하지 않는 항목만 유지
-      );
-    default:
-      return state;
-  }
-}
 
 
 const mockData = [
   {
-    id: 1,                     // 일기의 고유 ID
-    createdDate: new Date().getTime(), // 작성된 날짜(밀리초)
-    emotionId: 1,              // 감정 ID
-    content: "1번 일기 내용",   // 일기 내용
+    id: 1,
+    createdDate: new Date("2025-08-17").getTime(),
+    emotionId: 1,
+    content: "1번 일기 내용"
   },
   {
     id: 2,
-    createdDate: new Date().getTime(),
+    createdDate: new Date("2025-08-05").getTime(),
     emotionId: 2,
-    content: "2번 일기 내용",
+    content: "2번 일기 내용"
   },
-];
+  {
+    id: 3,
+    createdDate: new Date("2025-08-01").getTime(),
+    emotionId: 4,
+    content: "3번 일기 내용"
+  }
+]
 
-const DiaryStateContext = createContext();
-const DiaryDispatchContext = createContext();
+function reducer(state, action) {
+  switch (action.type) {
+    case "INIT":
+      return action.data
+    case "CREATE":
+      return [action.data, ...state]
+    case "UPDATE":
+      return state.map((item) =>
+        String(item.id) === String(action.data.id) ?
+          action.data
+          : item
+      )
+    case "DELETE":
+      return state.filter(
+        (item) => String(item.id) !== String(action.id)
+      )
+    default:
+      return state
+  }
+
+}
+
+export const DiaryStateContext = createContext()
+export const DiaryDispatchContext = createContext()
 function App() {
 
-  const [data, dispatch] = useReducer(reducer, mockData);
-  const idRef = useRef(3);
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDataLoaded, setIsDataLoaded] = useState(true)
+  const [mode, setMode] = useState('light')
+  const [data, dispatch] = useReducer(reducer, mockData)
+  const idRef = useRef(4)
 
 
 
   useEffect(() => {
     dispatch({
       type: "INIT",
-      data: mockData,
+      data: mockData
     })
-    setIsLoading(true)
   }, [])
 
+
+  const onChangeMode = (e) => {
+    setMode(e.target.value)
+  }
   const onCreate = (createdDate, emotionId, content) => {
+
     dispatch({
       type: "CREATE",
       data: {
@@ -76,48 +84,50 @@ function App() {
         emotionId,
         content
       }
-    });
-  };
+    })
+  }
   const onUpdate = (id, createdDate, emotionId, content) => {
     dispatch({
       type: "UPDATE",
       data: {
-        id,           // 수정할 일기의 고유 ID
-        createdDate,  // 수정된 작성 날짜
-        emotionId,    // 수정된 감정 ID
-        content       // 수정된 일기 내용
+        id,
+        createdDate,
+        emotionId,
+        content
       }
-    });
-  };
+    })
+  }
+
   const onDelete = (id) => {
     dispatch({
       type: "DELETE",
       id
-    });
-  };
-  if (!isDataLoaded) {
-    return <div>데이터를 불러오는 중입니다.</div>
-  } else {
-
-    return (
-
+    })
+  }
+  return (
+    <div className={`Container ${mode === 'light' ? '' : 'dark'}`}>
+      <div className="content-wrap">
 
         <DiaryStateContext.Provider value={data}>
-          <DiaryDispatchContext.Provider value={{onCreate,onUpdate,onDelete}}>
-
-
+          <DiaryDispatchContext.Provider value={{ onCreate, onUpdate, onDelete }}>
+            <select value={mode} onChange={onChangeMode}>
+              <option value="light">light</option>
+              <option value="dark">dark</option>
+            </select>
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/new' element={<New />} />
               <Route path='/edit/:id' element={<Edit />} />
               <Route path='/diary/:id' element={<Diary />} />
               <Route path='*' element={<Notfound />} />
-
             </Routes>
           </DiaryDispatchContext.Provider>
         </DiaryStateContext.Provider>
-    )
-  }
+      </div>
+
+    </div>
+
+  )
 }
 
 export default App
