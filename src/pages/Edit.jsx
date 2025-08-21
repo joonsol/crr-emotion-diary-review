@@ -8,6 +8,7 @@ import useDiary from '../hook/useDiary'
 
 const Edit = () => {
   const params = useParams()
+  const nav =useNavigate()
   const { onDelete, onUpdate } = useContext(DiaryDispatchContext)
   const curDiaryItem = useDiary(params.id)
   
