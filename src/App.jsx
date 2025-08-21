@@ -1,6 +1,6 @@
 
 import './App.css'
-import { useReducer, useRef, createContext, useEffect, useState } from 'react'
+import { useReducer, useRef, createContext,  useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Diary from './pages/Diary'
 import Edit from './pages/Edit'
@@ -57,23 +57,16 @@ export const DiaryStateContext = createContext()
 export const DiaryDispatchContext = createContext()
 function App() {
 
-  const [mode, setMode] = useState('light')
   const [data, dispatch] = useReducer(reducer, mockData)
   const idRef = useRef(4)
 
-
-
-  useEffect(() => {
+  useEffect(()=>{
     dispatch({
-      type: "INIT",
-      data: mockData
+      type:"INIT",
+      data:mockData
     })
-  }, [])
+  },[])
 
-
-  const onChangeMode = (e) => {
-    setMode(e.target.value)
-  }
   const onCreate = (createdDate, emotionId, content) => {
 
     dispatch({
@@ -105,28 +98,17 @@ function App() {
     })
   }
   return (
-    <div className={`Container ${mode === 'light' ? '' : 'dark'}`}>
-      <div className="content-wrap">
-
-        <DiaryStateContext.Provider value={data}>
-          <DiaryDispatchContext.Provider value={{ onCreate, onUpdate, onDelete }}>
-            <select value={mode} onChange={onChangeMode}>
-              <option value="light">light</option>
-              <option value="dark">dark</option>
-            </select>
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/new' element={<New />} />
-              <Route path='/edit/:id' element={<Edit />} />
-              <Route path='/diary/:id' element={<Diary />} />
-              <Route path='*' element={<Notfound />} />
-            </Routes>
-          </DiaryDispatchContext.Provider>
-        </DiaryStateContext.Provider>
-      </div>
-
-    </div>
-
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider value={{onCreate,onUpdate,onDelete}}>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/new' element={<New />} />
+          <Route path='/edit/:id' element={<Edit />} />
+          <Route path='/diary/:id' element={<Diary />} />
+          <Route path='*' element={<Notfound />} />
+        </Routes>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   )
 }
 
